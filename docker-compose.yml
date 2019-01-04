@@ -1,0 +1,38 @@
+version: '3.3'
+
+services:
+  mysql:
+    build:
+      context: ./mysql5.7/
+    container_name: "mysql"
+    image: mysql5.7:docker_nextcloud_1.0
+    user: ${HOST_USER_ID}:${HOST_GROUP_ID}
+    ports:
+      - 3306:3306
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./mysql5.7/mysql_data:/var/lib/mysql
+      - ./mysql5.7/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    env_file:
+      .env
+  php:
+    depends_on:
+      - mysql 
+    build:
+      context: ./php7.2/
+      args:
+        - HOST_USER_ID=${HOST_USER_ID}
+        - HOST_GROUP_ID=${HOST_GROUP_ID}
+    container_name: "php"
+    image: php7.2:docker_nextcloud_1.0
+    ports:
+      - 8080:80
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./html:/var/www/html
+      - ./php7.2/etc_apache2_sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - ./php7.2/usr_local_etc_php/php.ini-development:/usr/local/etc/php/php.ini
+      - ./php7.2/usr_local_etc_php/conf.d:/usr/local/etc/php/conf.d
+    env_file:
+      .env
+

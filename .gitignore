@@ -1,0 +1,7 @@
+.env
+html/nextcloud/
+mysql5.7/mysql_data/
+mysql5.7/docker-entrypoint-initdb.d/
+php7.2/etc_apache2_sites-available/
+php7.2/usr_local_etc_php/php.ini-development
+
